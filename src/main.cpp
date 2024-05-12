@@ -47,33 +47,27 @@ void loop()
 
   for (uint8_t scan_in = 0; scan_in < 6; scan_in++)
   {
-    Serial.print("Console *** Envoi 0x");
-    Serial.println(scan_in, HEX);
-
-    pinMode(output_b2, OUTPUT);
-    pinMode(output_b1, OUTPUT);
-    pinMode(output_b0, OUTPUT);
+    // Serial.print("Console *** Envoi 0x");
+    // Serial.println(scan_in, HEX);
 
     digitalWrite(output_b2, scan_in & 0x04);
     digitalWrite(output_b1, scan_in & 0x02);
     digitalWrite(output_b0, scan_in & 0x01);
-
-    pinMode(output_b2, INPUT);
-    pinMode(output_b1, INPUT);
-    pinMode(output_b0, INPUT);
+    delayMicroseconds(1000);
 
     scan_out =
         digitalRead(input_b7) * 0x80 +
         digitalRead(input_b6) * 0x40 +
         digitalRead(input_b5) * 0x20 +
         digitalRead(input_b4) * 0x10 +
-        digitalRead(output_b2) * 0x04 +
-        digitalRead(output_b1) * 0x02 +
-        digitalRead(output_b0) * 0x01;
+        scan_in;
 
-    Serial.print("  - Reception 0x");
-    Serial.println(scan_out, HEX);
+    // Serial.print("  - Reception 0x");
+    // Serial.println(scan_out, HEX);
+    // Serial.print("  --> ");
+    if (!(scan_out & 0x10))
+      Serial.println(keys_layout[scan_in][(scan_out & 0xE0) >> 5]);
   }
 
-  delay(1000);
+  delay(10);
 }
